@@ -1,0 +1,64 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+
+	<title>jQuery Edit In Place Example</title>
+</head>
+<body>
+	<p>Double click a list item to modify it.</p>
+	<ul id="myList">
+		<li>This is item one</li>
+		<li>This is item two</li>
+		<li>This is item three</li>
+		<li>This is item four</li>
+		<li>This is item five</li>
+	</ul>
+	<a id="newItem" href="#">Add new list item</a>
+	
+	<script src="jquery.js"></script>
+	<script id="demoScript" type="text/javascript">
+		function newInput(target, text) {
+			var input = $('<input type="text" />')
+							.val( text )
+							.bind('blur', function() {
+								var value = $(this).val();
+								$(target).html( value );
+								// Send ajax request to backend
+							});
+			setTimeout(function() {
+				input.trigger('focus');
+			}, 150);
+			return input[0];
+		}
+		
+		/*
+		$('ul')
+			.bind('dblclick', function(evt) {
+				var text = $(evt.target).text();
+				$(evt.target)
+					.empty()
+					.append( newInput(evt.target, text) );
+			});
+		*/
+		$('ul').delegate('li', 'dblclick', function(evt) {
+			var text = $(this).text();
+			$(this)
+				.empty()
+				.append( newInput(this, text) );
+		});
+				
+		$('#newItem')
+			.click(function() {
+				var li = $('<li></li>');
+				
+				li.append( newInput(li[0], 'Your new list item') )
+					.appendTo('#myList');
+				return false;
+			});
+	</script>
+	
+	<script src="examples.js"></script>
+</body>
+</html>

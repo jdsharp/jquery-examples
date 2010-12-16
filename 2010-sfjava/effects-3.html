@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html>
+<head>
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
+<style>
+	body {
+		margin: 30px;
+		font-family: sans-serif;
+	}
+	div {
+		width: 100px; height: 100px;
+		border: 1px solid magenta;
+		padding: 10px;
+	}
+	table {
+		border-collapse: collapse;
+	}
+	th {
+		background: #505050;
+		color: #FFF;
+	}
+	td {
+		padding: 0.25em 0.75em;
+		border: 1px solid #DFDFDF;
+	}
+	.removing {
+		background: #CFCFFF;
+	}
+</style>
+<meta charset=utf-8 />
+</head>
+<body>
+	<input id="resetRows" type="button" value="Reset hidden rows" />
+	
+	<table>
+		<thead>
+			<th>Name</th>
+			<th>Title</th>
+			<th>City</th>
+			<th>State</th>
+			<th>&nbsp;</th>
+		</thead>
+		<tbody>
+			<tr>
+				<td>Jonathan Sharp</td>
+				<td>President</td>
+				<td>Plattsmouth</td>
+				<td>Nebraska</td>
+				<td><a class="remove" href="#">[X]</a></td>
+			</tr>
+			<tr>
+				<td>Jonathan Sharp</td>
+				<td>President</td>
+				<td>Plattsmouth</td>
+				<td>Nebraska</td>
+				<td><a class="remove" href="#">[X]</a></td>
+			</tr>
+			<tr>
+				<td>Jonathan Sharp</td>
+				<td>President</td>
+				<td>Plattsmouth</td>
+				<td>Nebraska</td>
+				<td><a class="remove" href="#">[X]</a></td>
+			</tr>
+			<tr>
+				<td>Jonathan Sharp</td>
+				<td>President</td>
+				<td>Plattsmouth</td>
+				<td>Nebraska</td>
+				<td><a class="remove" href="#">[X]</a></td>
+			</tr>
+			<tr>
+				<td>Jonathan Sharp</td>
+				<td>President</td>
+				<td>Plattsmouth</td>
+				<td>Nebraska</td>
+				<td><a class="remove" href="#">[X]</a></td>
+			</tr>
+			<tr>
+				<td>Jonathan Sharp</td>
+				<td>President</td>
+				<td>Plattsmouth</td>
+				<td>Nebraska</td>
+				<td><a class="remove" href="#">[X]</a></td>
+			</tr>
+		</tbody>
+	</table>
+  
+  <script class="demoScript" type="text/javascript">
+  	$('.remove').click(function(evt) {
+  		$(evt.target)
+  			.closest('tr')
+  				.addClass('removing')
+  				.fadeOut('slow', function() {
+  					$(this).removeClass('removing');
+  					// TODO: Make ajax request to server to remove the 
+  					// row from the database
+  				});
+  	});
+  	
+  	$('#resetRows').click(function() {
+  		$('tr:hidden').fadeIn('normal');
+  		return false;
+  	});
+  </script>
+  <script src="examples.js"></script>
+</body>
+</html>
+
+

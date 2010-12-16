@@ -1,0 +1,49 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+
+	<title>jQuery Edit In Place Example</title>
+</head>
+<body>
+	<p>Double click a list item to modify it.</p>
+	<ul>
+		<li>This is item one</li>
+		<li>This is item two</li>
+		<li>This is item three</li>
+		<li>This is item four</li>
+		<li>This is item five</li>
+	</ul>
+	
+	<script src="jquery.js"></script>
+	<script id="demoScript" type="text/javascript">
+		$('ul li')
+			.bind('dblclick', function() {
+				
+				// Returns the current text value of DOM Node
+				var text = $(this).text();
+				// Empty the innerHTML of this element
+				$(this).empty();
+				
+				// this == LI
+				var _this = this;
+				$('<input type="text" />')
+					.val( text )
+					.bind('keydown', function(evt) {
+						if ( evt.which == 13 ) {
+							$(this).trigger('blur');
+						}
+					})
+					.bind('blur', function() {
+						var value = $(this).val();
+						$(_this).html( value );
+						// TODO: Send ajax request to backend
+					})
+					.appendTo( this );
+			});
+	</script>
+	
+	<script src="examples.js"></script>
+</body>
+</html>

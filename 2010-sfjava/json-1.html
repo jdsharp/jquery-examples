@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html>
+<head>
+<script src="jquery.js"></script>
+<style>
+	body {
+		margin: 30px;
+		font-family: sans-serif;
+	}
+	table {
+		border-collapse: collapse;
+	}
+	tr {
+		background: #FFF;
+	}
+	th {
+		background: #505050;
+		color: #FFF;
+	}
+	td {
+		padding: 0.25em 0.75em;
+		border: 1px solid #DFDFDF;
+	}
+	.removing {
+		background: #CFCFFF;
+	}
+	.updating {
+		background: #FFAAAA;
+	}
+	.error {
+		font-weight: bold;
+		color: maroon;
+	}
+</style>
+<meta charset=utf-8 />
+</head>
+<body>
+	<p>
+	<input id="resetRows" type="button" value="Reset" />
+	</p>
+	
+	<p>
+	<label>Filter</label>
+	<input type="text" id="statesFilter" />
+	</p>
+	
+	<table id="states">
+		<thead>
+			<th>Abbr</th>
+			<th>State</th>
+			<th>&nbsp;</th>
+		</thead>
+		<tbody></tbody>
+	</table>
+	
+	<ol id="qunit-tests"></ol>
+  
+  <script src="jquery-ui-1.8rc3.min.js" type="text/javascript"></script>
+  <script src="jquery.mockjax.js"></script>
+  <script src="qunit.js"></script>
+  <link href="qunit.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript">
+  
+  	$.mockjax({
+  		url: '**',
+  		responseTime: 1500,
+  		responseText: {
+  			states: [ { abbr: 'OR', name: 'Oregon' } ]
+  		}
+   	});
+   	
+  </script>
+  <script class="demoScript" type="text/javascript">
+  	function loadStates(search) {
+  		var data = {};
+  		if ( arguments.length == 1 ) {
+  			data.search = search;
+  		}
+  		
+  		function clean(text) {
+  			return $('<span/>').text(text).text();
+  		}
+  		data.delay = 1;
+  		$.getJSON('json-1.php', data, function(data) {
+  			var $t = $('#states tbody');
+  			$t.empty();
+  			$.each(data.states, function(k, v) {
+  				$('<tr></tr>')
+  					.append( $('<td></td>').text(v.value) )
+  					.append('<td data-key="' + v.abbr + '" class="editable">' + v.name +'</td>')
+  					.append('<td><a class="remove" href="#">[X]</a></td>')
+  					.appendTo( $t );
+  			});
+  		});
+  	}
+  	function updateState(state, value, cb) {
+  		$.getJSON('json-1.php', {delay: 2, update: state, value: value}, function(data) {
+  			cb( data.status == 'success', data.message );
+  		});
+  	}
+  	loadStates();
+  	
+  	$('#addTitle').change(function() {
+  		$('#titleInput').toggle( $(this).is(':checked') );
+  	});
+	
+	var ListManager = {
+		remove: function(target, state) {
+			$.getJSON('json-1.php', {remove: state}, function(json) {
+				if ( json.status == 'success' ) {
+					$(target).remove();
+				} else {
+					$(target).fadeIn();
+				}
+			});
+		}
+	};
+	
+	
+  	// Hide a row in the table
+  	$('#states').delegate('a.remove', 'click', function() {
+  		// this == a.remove
+  		$(this)
+  			.closest('tr')
+  				.addClass('removing')
+  				.fadeOut('normal', function() {
+  					// this == TR
+  					$(this).removeClass('removing');
+  					var state = $(this).find('td:eq(0)').text();
+  					ListManager.remove(this, state);
+  				});
+  		return false;
+  	});
+  	
+  	$('#statesFilter').bind('keyup', function() {
+  		clearTimeout( $(this).data('timer') || 0 );
+  		
+  		var value = $(this).val();
+  		
+  		var timer = setTimeout(function() {
+  			loadStates( value );
+  		}, 1200);
+  		
+  		$(this).data('timer', timer);
+  	});
+  	
+  	// Show all hidden rows
+  	$('#resetRows').click(function() {
+  		$('#states tbody').empty().append('<tr><td colspan="3">Loading...</td></tr>');
+  		$.getJSON('json-1.php', {reset: true, delay: true}, function() {
+  			loadStates();
+  		});
+  		return false;
+  	});
+  	
+  	// Make a cell editable
+  	function newInput(target, text) {
+  		var input = $('<input type="text" />')
+  						.val( text )
+  						.bind('keyup', function(evt) {
+  							if ( evt.which == 13 ) {
+  								$(this).trigger('blur');
+  							}
+  						})
+  						.bind('blur', function() {
+  							var value = $(this).val();
+  							$(target)
+  								.html( value )
+  								.trigger('newValue', [value]);
+  							// Send ajax request to backend
+  						});
+  		return input[0];
+  	}
+  	
+  	$('#states').delegate('td.editable', 'dblclick', function(evt) {
+  			var text = $(this).text();
+			$(this)
+				.empty()
+				.append( newInput(this, text) )
+					.find(':text')
+						.focus()
+					.end()
+				.bind('newValue', function(evt, value) {
+					$(this).addClass('updating');
+					var _this = this;
+					updateState( $(this).attr('data-key'), value, function(response, msg) {
+						$(_this).removeClass('updating');
+						if ( !response ) {
+							$(_this).addClass('error');
+						}
+						setTimeout(function() {
+							$(_this)
+								.trigger('dblclick')
+								.append('<br/>' + msg);
+						}, 1000);
+					});
+				});
+  		});
+  </script>
+  <script src="examples.js"></script>
+  
+  
+  <script type="text/javascript">
+  /*
+  	QUnit.module('States');
+  	QUnit.test('Test load data', function() {
+  		ok( $('#states').length == 1, 'There is a states element');
+  	});
+  	QUnit.asyncTest('Returned 50 states + DC', function() {
+  		$.getJSON('json-1.php', {}, function(data) {
+  			ok( data.states.length == 51, 'There were 5 states + DC returned (really received: ' + data.states.length + ')');
+  			start();
+  		});
+  	});
+  	*/
+  </script>
+</body>
+</html>
+
+

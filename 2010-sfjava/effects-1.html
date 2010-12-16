@@ -1,0 +1,45 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+
+	<title>Effects 1</title>
+</head>
+<body>
+	<p>Double click a list item to hide it.</p>
+	<ul id="myList">
+		<li>This is item one</li>
+		<li>This is item two</li>
+		<li>This is item three</li>
+		<li>This is item four</li>
+		<li>This is item five</li>
+	</ul>
+	<a id="newItem" href="#">Reset</a>
+	
+	<script src="jquery.js"></script>
+	<script id="demoScript" type="text/javascript">
+		// Example of event delegation
+		$('ul')
+			.delegate('li', 'dblclick', function(evt) {
+				$(this).fadeOut(1000, function() {
+					alert('Finished fading');
+				});
+			});
+		/*
+		$('li').live('dblclick', function() {
+			$(this).fadeOut(2000, function() {
+				alert('Finished!');
+			});
+		});
+		*/
+		$('#newItem')
+			.click(function() {
+				$('ul li').fadeIn('slow');
+				return false;
+			});
+	</script>
+	
+	<script src="examples.js"></script>
+</body>
+</html>

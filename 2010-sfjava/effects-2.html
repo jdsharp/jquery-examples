@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head>
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
+<style>
+body { margin: 30px; }
+input { float:right; }
+div {
+  width: 100px; height: 100px;
+  border: 1px solid magenta;
+  padding: 10px; }
+</style>
+<meta charset=utf-8 />
+</head>
+<body>
+
+<input type="button" class="fade" value="click me!"></input>
+<div class="fade-animate"></div>
+<hr />
+<input type="button" class="" value="click me!"></input>
+<div class=""></div>
+<hr />
+<input type="button" class="" value="click me!"></input>
+<div class=""></div>
+<hr />
+<input type="button" class="" value="click me!"></input>
+<div class=""></div>
+<hr />
+<input type="button" class="" value="click me!"></input>
+<div class=""></div>
+  
+  <script class="demoScript" type="text/javascript">
+  	$('.fade').bind('click', function() {
+  		$('.fade-animate').fadeOut('slow');
+  	});
+  </script>
+  <script src="examples.js"></script>
+</body>
+</html>
+
+

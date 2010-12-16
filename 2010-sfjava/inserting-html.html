@@ -1,0 +1,44 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+
+	<title>Inserting HTML</title>
+</head>
+<body>
+	<p>Double click a list item to hide it.</p>
+	<ul id="myList">
+		<li>This is item one</li>
+		<li class="active">This is item two</li>
+		<li>This is item three</li>
+		<li id="item243">This is item four</li>
+		<li>This is item five</li>
+	</ul>
+	
+	<a id="newItem" href="#">Add new item</a>
+	
+	<script src="jquery.js"></script>
+	
+	<script id="demoScript" type="text/javascript">
+		$('#someElementDoesNotExist')
+			.click(function() {
+				
+			})			
+		//$('li').dumpStack('list items');
+		
+		$('#newItem')
+			//.dumpStack('links')
+			.click(function() {
+				alert('here');
+				var $li = $('<li><div><a href="#">Hello world</a></div></li>');
+				
+				$li.find('a').attr('title', 'Hello world').addClass('error');
+				
+				$li.appendTo('#myList');
+			});
+	</script>
+	
+	<script src="examples.js"></script>
+</body>
+</html>
